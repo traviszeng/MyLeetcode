@@ -2,10 +2,7 @@
  * Created by Travis Zeng  on 2017/7/14.
  */
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * binary tree node abstract class
@@ -240,5 +237,127 @@ public class TreeNode {
             return result;
         }
 
+    }
+
+
+    /**
+     * solved on 2017/9/20
+     * */
+
+    /**
+     *  Given two non-empty binary trees s and t, check whether tree t has exactly the same structure and node values with a subtree of s. A subtree of s is a tree consists of a node in s and all of this node's descendants. The tree s could also be considered as a subtree of itself.
+
+     Example 1:
+     Given tree s:
+
+     3
+     / \
+     4   5
+     / \
+     1   2
+
+     Given tree t:
+
+     4
+     / \
+     1   2
+
+     Return true, because t has the same structure and node values with a subtree of s.
+
+     Example 2:
+     Given tree s:
+
+     3
+     / \
+     4   5
+     / \
+     1   2
+     /
+     0
+
+     Given tree t:
+
+     4
+     / \
+     1   2
+
+     Return false.
+     * */
+    public boolean isSubtree(TreeNode s, TreeNode t) {
+        String tree1 = preorder(s,true);
+        String tree2 = preorder(t,true);
+
+        return tree1.indexOf(tree2)>=0;
+    }
+
+    public String preorder(TreeNode t,boolean isLeft){
+        if(t==null){
+            if(isLeft)
+                return "lnull";
+            else
+                return "rnull";
+        }
+
+        return "#"+t.val+" "+preorder(t.left,true)+" "+preorder(t.right,false);
+    }
+    
+
+    /**
+     * walk through tree and project its location and val to hashmap
+     * hashmap<location,val>
+     * start param:root node of the tree
+     * position=0
+     */
+
+
+
+    public void treeToHashmap(TreeNode root,int position,Map<Integer,Integer> positionMap){
+
+
+        if(root==null) return;
+        if(root.left!=null) {
+            positionMap.put(2*position+1,root.left.val);
+            treeToHashmap(root.left,2*position+1,positionMap);
+        }
+
+        if(root.right!=null){
+            positionMap.put(2*position+2,root.right.val);
+            treeToHashmap(root.right,2*position+2,positionMap);
+        }
+
+    }
+
+    /**
+     * get tree node position list
+     * init params root node and root node's position 0
+     *
+     * */
+
+
+    public void getPositionList(TreeNode root,int position,List<Integer> positionList){
+        if(root == null) return;
+        if(root.left !=null)
+            positionList.add(position*2+1);
+        if(root.right !=null)
+            positionList.add(position*2+2);
+    }
+
+
+    public static void main(String[] args){
+        TreeNode s = new TreeNode(3);
+        s.left = new TreeNode(4);
+        s.right=new TreeNode(5);
+
+        s.left.left = new TreeNode(1);
+        s.left.right = new TreeNode(2);
+
+        TreeNode t =new TreeNode(4);
+        t.left =new TreeNode(1);
+        t.right = new TreeNode(2);
+
+        System.out.print(s.isSubtree(s,t));
+
+        //root.positionMap.put(0,root.val);
+        //root.treeToHashmap(root,0);
     }
 }
