@@ -300,31 +300,36 @@ public class TreeNode {
 
         return "#"+t.val+" "+preorder(t.left,true)+" "+preorder(t.right,false);
     }
-    
+
 
     /**
      * walk through tree and project its location and val to hashmap
      * hashmap<location,val>
      * start param:root node of the tree
      * position=0
+     *
+     * @return the max position
      */
 
 
+    int maxNodePosition = 0;
+    public int treeToHashmap(TreeNode root,int position,Map<Integer,Integer> positionMap){
 
-    public void treeToHashmap(TreeNode root,int position,Map<Integer,Integer> positionMap){
 
-
-        if(root==null) return;
+        if(root==null) return maxNodePosition;
         if(root.left!=null) {
             positionMap.put(2*position+1,root.left.val);
+            if(2*position+1>maxNodePosition) maxNodePosition = 2*position+1;
             treeToHashmap(root.left,2*position+1,positionMap);
         }
 
         if(root.right!=null){
             positionMap.put(2*position+2,root.right.val);
+            if(2*position+2>maxNodePosition) maxNodePosition = 2*position+2;
             treeToHashmap(root.right,2*position+2,positionMap);
         }
 
+        return maxNodePosition;
     }
 
     /**
@@ -343,6 +348,92 @@ public class TreeNode {
     }
 
 
+    /**
+     * Given a binary tree, return the bottom-up level order traversal of its nodes' values.
+     * (ie, from left to right, level by level from leaf to root).
+
+     For example:
+     Given binary tree [3,9,20,null,null,15,7],
+
+     3
+     / \
+     9  20
+     /  \
+     15   7
+
+     return its bottom-up level order traversal as:
+
+     [
+     [15,7],
+     [9,20],
+     [3]
+     ]
+
+     * */
+    public List<List<Integer>> levelOrderBottom(TreeNode root){
+        List<List<Integer>> listArray = new ArrayList<>();
+        if(root==null){
+            return listArray;
+        }
+
+        int h = getHeightOfTree(root);
+        for(int i=0;i<h;i++){
+            listArray.add(new ArrayList<>());
+        }
+
+        inorder(listArray,root,0,h);
+        return listArray;
+    }
+
+
+    /**
+     * inorder traverse
+     * */
+    public void inorder(List<List<Integer>> listArray,TreeNode root,int h,int size){
+        if(root==null){
+            return;
+        }
+
+        listArray.get(size-h-1).add(root.val);
+        inorder(listArray,root.left,h+1,size);
+        inorder(listArray,root.right,h+1,size);
+    }
+
+    /**
+     * get binary tree height
+     * */
+    public int getHeightOfTree(TreeNode root){
+        if(root==null) return 0;
+        return 1+Math.max(getHeightOfTree(root.left),getHeightOfTree(root.right));
+
+    }
+
+
+
+    /**
+     * DFS solution
+     * */
+    public List<List<Integer>> levelOrderBottom2(TreeNode root) {
+        Queue<TreeNode> queue = new LinkedList<TreeNode>();
+        List<List<Integer>> wrapList = new LinkedList<List<Integer>>();
+
+        if(root == null) return wrapList;
+
+        queue.offer(root);
+        while(!queue.isEmpty()){
+            int levelNum = queue.size();
+            List<Integer> subList = new LinkedList<Integer>();
+            for(int i=0; i<levelNum; i++) {
+                if(queue.peek().left != null) queue.offer(queue.peek().left);
+                if(queue.peek().right != null) queue.offer(queue.peek().right);
+                subList.add(queue.poll().val);
+            }
+            wrapList.add(0, subList);
+        }
+        return wrapList;
+    }
+
+
     public static void main(String[] args){
         TreeNode s = new TreeNode(3);
         s.left = new TreeNode(4);
@@ -350,12 +441,18 @@ public class TreeNode {
 
         s.left.left = new TreeNode(1);
         s.left.right = new TreeNode(2);
+        s.left.right.right = new TreeNode(9);
+
+        s.right.right  = new TreeNode(6);
+        s.right.right.right  = new TreeNode(7);
 
         TreeNode t =new TreeNode(4);
         t.left =new TreeNode(1);
         t.right = new TreeNode(2);
 
-        System.out.print(s.isSubtree(s,t));
+        List<List<Integer>> list =s.levelOrderBottom(s);
+
+        //System.out.println(Math.floor(Math.log(14)/Math.log(2)));
 
         //root.positionMap.put(0,root.val);
         //root.treeToHashmap(root,0);
