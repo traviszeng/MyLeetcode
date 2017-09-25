@@ -463,13 +463,33 @@ public class TreeNode {
      3. -3 -> 11
 
      * */
-    public int pathSum(TreeNode root, int sum) {
 
+    /**
+     * DFS solution
+     * */
+    public int pathSum(TreeNode root, int sum) {
+       if(root == null) return 0;
+       return pathSumFrom(root,sum)+pathSum(root.left,sum)+pathSum(root.right,sum);
+    }
+
+    private int pathSumFrom(TreeNode node,int sum){
+        if(node == null) return 0;
+        return (node.val ==sum?1:0) +pathSumFrom(node.left,sum-node.val)+pathSumFrom(node.right,sum-node.val);
     }
 
 
 
     public static void main(String[] args){
+        /**
+         * Test case:
+         *         3
+         *        / \
+         *       4   5
+         *      /\   \
+         *     1  2   6
+         *         \   \
+         *          9  7
+         * */
         TreeNode s = new TreeNode(3);
         s.left = new TreeNode(4);
         s.right=new TreeNode(5);
@@ -485,11 +505,10 @@ public class TreeNode {
         t.left =new TreeNode(1);
         t.right = new TreeNode(2);
 
-        List<List<Integer>> list =s.levelOrderBottom(s);
+        System.out.println(s.pathSum(s,9));
 
-        //System.out.println(Math.floor(Math.log(14)/Math.log(2)));
 
-        //root.positionMap.put(0,root.val);
-        //root.treeToHashmap(root,0);
+
+
     }
 }

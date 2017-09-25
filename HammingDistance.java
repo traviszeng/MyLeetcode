@@ -18,6 +18,7 @@ public class HammingDistance {
 
     public static void main(String[] args){
         HammingDistance h = new HammingDistance();
-        System.out.print(h.hammingDistance(8,19));
+        System.out.println(h.hammingDistance(8,19));
+        System.out.println(Integer.bitCount(34));
     }
 }
